@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Encryption Tool
+    </title>
+    <link rel="shortcut icon" type="image/x-icon" href="/..favicon.ico"/>
+    <link rel="stylesheet" href="CSS/index.css" type="text/css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!--uploadam axios-->
+    <script src="scripturi/criptare.js"></script>
+</head>
+
+<body>
+
+
+    <p id="text">
+        This is an encryption tool that performs two consecutive encryptions/decryptions. Choose the file you want to encrypt/decrypt below.
+        Your output will be shown below and also saved in the "output.txt" file in the root folder of the project. Enjoy!
+    </p>
+    <br><br>
+    
+    <!-- <button type="button" id="buton_scriere_fisier" onclick="scriereFisier()">Scrie in fisier</button> -->
+    
+    <div id="formular">
+    <!--la crypt('decrypt'), crypt este functia async de mai jos si 'decrypt' este efectiv "operatiunea aleasa, adica functia de decriptare din criptare.js" -->
+    <form ref='uploadForm' id='uploadForm' encType="multipart/form-data">
+        <div id="id_input_file" >
+            <input style="display:none;" id="input_file" type="file" name="fisier" />
+            <label style="color:azure;" class="stilizare" for="input_file">Click me to upload file</label>
+    </div>
+    
+    <br>
+    <div id="id_textarea_perm">
+        <p id="text1">Enter your permutation: </p>
+        <textarea id="permutare" placeholder="Eg: 2 1 3 0"></textarea>
+    </div>
+
+    
+    <div id="id_textarea_key">
+        <p id="text2">Enter your key: </p>
+        <textarea id="cheie_Polybius" placeholder="Eg: key"></textarea>
+    </div>
+        
+        
+    </form>
+    <br><br><br><br>
+    <div id="buton">
+        <button class="button" type="button" id="buton_criptare" onclick="criptare('encrypt')">Encrypt me!</button>
+        <button class="button" type="button" id="buton_decriptare" onclick="decriptare('decrypt')">Decrypt me!</button>
+    </div>
+
+    <p id="text">The output is:</p>
+    <div id="div_res">
+        <p id = "res" style="color:red;"></p>
+        <br><br><br>
+    </div>
+</div>
+
+    <script> 
+        async function criptare(op) 
+        {
+             
+            var formData = new FormData();
+
+            var elementInput = document.getElementById('input_file');
+            //console.log(file.files[0]);
+            var permutare = document.getElementById('permutare');
+            var key = document.getElementById('cheie_Polybius');
+
+            formData.append("fisier", elementInput.files[0]);
+            formData.append("permutare", permutare.value);
+            formData.append("cheie_Polybius", key.value);
+            
+
+
+
+
+            //document.getElementById("continut_fisier").innerHTML=file;
+
+            var result = await axios.post(`/upload/${op}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            //var final = BigInt(result.data);
+            var final = result.data.join("");
+            //console.log(result.data);
+            //var final = result.data;
+            //var final = toFixed(result.data);
+            //document.getElementById("res").innerHTML=final; 
+            document.getElementById("res").innerHTML=final; 
+            
+        }
+
+
+        async function decriptare(op) 
+        {
+             
+            var formData = new FormData();
+
+            var elementInput = document.getElementById('input_file');
+            var permutare = document.getElementById('permutare');
+            var key = document.getElementById('cheie_Polybius');
+
+            formData.append("fisier", elementInput.files[0]);
+            formData.append("permutare", permutare.value);
+            formData.append("cheie_Polybius", key.value);
+
+            //document.getElementById("continut_fisier").innerHTML=file;
+
+            var result = await axios.post(`/upload/${op}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+            //var final = BigInt(result.data).toString();
+            console.log(result.data);
+            var final = result.data;
+            //var final = toFixed(result.data);
+            document.getElementById("res").innerHTML=final; 
+            
+        }
+
+
+    </script>
+
+</body>
+
+</html>
